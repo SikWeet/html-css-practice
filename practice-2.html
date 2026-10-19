@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Форма напитка</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:30px;background:#f6f2ed;color:#35271f}form{max-width:600px;background:white;padding:24px;border:1px solid #d5c4b4;border-radius:6px}h1{font-size:24px;margin-top:0}form>label{display:block;margin:15px 0}input:not([type=radio]),select,textarea{display:block;width:100%;padding:9px;margin-top:6px;border:1px solid #b8aaa0;border-radius:3px;font:inherit}fieldset{border:1px solid #b8aaa0}fieldset label{margin-right:12px;white-space:nowrap}button{background:#6c4936;color:white;border:0;padding:11px 15px;cursor:pointer;border-radius:3px;margin-right:7px}button[type=reset]{background:#80736b}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #baa998;padding:10px;text-align:left}th{background:#e8dace}td img{width:100px;height:80px;object-fit:cover}td{overflow-wrap:anywhere}@media(max-width:640px){body{margin:12px}table{display:block;overflow-x:auto}form{padding:16px}}</style></head>
+<body>
+<form>
+<h1>Добавление напитка</h1>
+<label>Название напитка <input name="title" required placeholder="Капучино"></label>
+<label>Сорт кофе <select name="sort"><option>Арабика</option><option>Робуста</option><option>Смесь</option></select></label>
+<fieldset><legend>Крепость обжарки</legend><label><input type="radio" name="strong" value="Слабая" checked> Слабая</label><label><input type="radio" name="strong" value="Средняя"> Средняя</label><label><input type="radio" name="strong" value="Сильная"> Сильная</label></fieldset>
+<label>Изображение <input name="image" type="url" required placeholder="https://example.com/coffee.jpg"></label>
+<label>Стоимость напитка <input name="cost" type="number" min="0" step="0.01" required placeholder="250"></label>
+<label>Описание <textarea name="description" rows="3" required></textarea></label>
+<button type="submit">Добавить напиток</button><button type="reset">Очистить</button>
+</form><br>
+<table id="table"><thead><tr><th>Изображение</th><th>Название напитка</th><th>Сорт кофе</th><th>Крепость обжарки</th><th>Стоимость</th><th>Описание</th></tr></thead></table>
+<script>// Добавление данных формы в таблицу. Локальная версия работает без сети.
+const form = document.querySelector('form');
+const table = document.querySelector('#table');
+const body = table.createTBody();
+form.addEventListener('submit', function (event) {
+  event.preventDefault();
+  const data = new FormData(form);
+  const row = body.insertRow();
+  ['image', 'title', 'sort', 'strong', 'cost', 'description'].forEach(function (name) {
+    const cell = row.insertCell();
+    if (name === 'image') {
+      const image = document.createElement('img');
+      const url = new URL(data.get(name));
+      if (['https:', 'http:'].includes(url.protocol)) image.src = url.href;
+      image.alt = data.get('title');
+      cell.append(image);
+    } else cell.textContent = data.get(name);
+  });
+  form.reset();
+});
+</script>
+</body></html>
